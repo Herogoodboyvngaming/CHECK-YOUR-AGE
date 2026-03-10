@@ -126,6 +126,42 @@
             background: linear-gradient(90deg, transparent, #fff, transparent);
         }
 
+        /* Real-time Clock Styles */
+        .clock-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .clock-time {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+
+        .clock-date {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .clock-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
         .input-group {
             margin: 30px 0;
             animation: fadeIn 1s ease 0.6s both;
@@ -432,6 +468,9 @@
             .adult-title {
                 font-size: 1.4rem;
             }
+            .clock-time {
+                font-size: 2.2rem;
+            }
         }
 
         .error-msg {
@@ -457,6 +496,13 @@
         <div class="glass-card">
             <h1 class="title">Nhập Ngày Sinh Của Bạn Để Kiểm Tra Tuổi Của Bạn</h1>
             <p class="subtitle">Được Code Bởi : Nguyễn Chí Dự</p>
+            
+            <!-- Real-time Clock VN -->
+            <div class="clock-container">
+                <div class="clock-time" id="clockTime">00:00:00</div>
+                <div class="clock-date" id="clockDate">Đang tải...</div>
+                <div class="clock-label">🕐 Giờ Việt Nam (GMT+7)</div>
+            </div>
             
             <div class="input-group">
                 <label class="input-label">📅 Chọn ngày sinh của bạn</label>
@@ -523,32 +569,59 @@
 
         createParticles();
 
-        // Zodiac signs
-        function getZodiac(day, month) {
-            const zodiacs = [
-                { sign: 'Ma Kết', icon: '♑', dates: [1, 19] },
-                { sign: 'Bảo Bình', icon: '♒', dates: [2, 18] },
-                { sign: 'Song Ngư', icon: '♓', dates: [3, 20] },
-                { sign: 'Bạch Dương', icon: '♈', dates: [4, 19] },
-                { sign: 'Kim Ngưu', icon: '♉', dates: [5, 20] },
-                { sign: 'Song Tử', icon: '♊', dates: [6, 20] },
-                { sign: 'Cự Giải', icon: '♋', dates: [7, 22] },
-                { sign: 'Sư Tử', icon: '♌', dates: [8, 22] },
-                { sign: 'Xử Nữ', icon: '♍', dates: [9, 22] },
-                { sign: 'Thiên Bình', icon: '♎', dates: [10, 22] },
-                { sign: 'Bọ Cạp', icon: '♏', dates: [11, 21] },
-                { sign: 'Nhân Mã', icon: '♐', dates: [12, 21] },
-                { sign: 'Ma Kết', icon: '♑', dates: [12, 31] }
-            ];
+        // Real-time Clock for Vietnam (GMT+7)
+        function updateClock() {
+            const now = new Date();
+            
+            // Convert to Vietnam time (GMT+7)
+            const vietnamTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+            
+            const hours = String(vietnamTime.getHours()).padStart(2, '0');
+            const minutes = String(vietnamTime.getMinutes()).padStart(2, '0');
+            const seconds = String(vietnamTime.getSeconds()).padStart(2, '0');
+            
+            const days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+            const dayName = days[vietnamTime.getDay()];
+            const date = String(vietnamTime.getDate()).padStart(2, '0');
+            const month = String(vietnamTime.getMonth() + 1).padStart(2, '0');
+            const year = vietnamTime.getFullYear();
+            
+            document.getElementById('clockTime').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('clockDate').textContent = `${dayName}, ${date}/${month}/${year}`;
+        }
 
-            for (let z of zodiacs) {
-                if (month === z.dates[0] && day <= z.dates[1]) {
-                    return z;
-                } else if (month === z.dates[0] - 1 && day > zodiacs[zodiacs.indexOf(z) - 1]?.dates[1]) {
-                    return zodiacs[zodiacs.indexOf(z) - 1];
-                }
+        // Update clock immediately and every second
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Zodiac signs - FIXED ALGORITHM
+        function getZodiac(day, month) {
+            // Month is 1-12 (January = 1)
+            if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) {
+                return { sign: 'Bạch Dương', icon: '♈' };
+            } else if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) {
+                return { sign: 'Kim Ngưu', icon: '♉' };
+            } else if ((month == 5 && day >= 21) || (month == 6 && day <= 21)) {
+                return { sign: 'Song Tử', icon: '♊' };
+            } else if ((month == 6 && day >= 22) || (month == 7 && day <= 22)) {
+                return { sign: 'Cự Giải', icon: '♋' };
+            } else if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) {
+                return { sign: 'Sư Tử', icon: '♌' };
+            } else if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) {
+                return { sign: 'Xử Nữ', icon: '♍' };
+            } else if ((month == 9 && day >= 23) || (month == 10 && day <= 23)) {
+                return { sign: 'Thiên Bình', icon: '♎' };
+            } else if ((month == 10 && day >= 24) || (month == 11 && day <= 22)) {
+                return { sign: 'Bọ Cạp', icon: '♏' };
+            } else if ((month == 11 && day >= 23) || (month == 12 && day <= 21)) {
+                return { sign: 'Nhân Mã', icon: '♐' };
+            } else if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) {
+                return { sign: 'Ma Kết', icon: '♑' };
+            } else if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) {
+                return { sign: 'Bảo Bình', icon: '♒' };
+            } else {
+                return { sign: 'Song Ngư', icon: '♓' };
             }
-            return zodiacs[0];
         }
 
         function calculateAge() {
@@ -597,7 +670,7 @@
             }
             const daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
 
-            // Get zodiac
+            // Get zodiac - FIXED: use getDate() and getMonth() + 1
             const zodiac = getZodiac(birthDate.getDate(), birthDate.getMonth() + 1);
 
             // Animate numbers
