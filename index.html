@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm Tra Tuổi Của Bạn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+            padding: 50px 40px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            line-height: 1.2;
+            animation: fadeInDown 1s ease;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+        }
+
+        .input-group {
+            margin: 30px 0;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        .input-label {
+            display: block;
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .date-input:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .date-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .check-btn {
+            margin-top: 25px;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e73c7e;
+            background: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease 0.9s both;
+        }
+
+        .check-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            color: #d6336c;
+        }
+
+        .check-btn:hover::before {
+            left: 100%;
+        }
+
+        .check-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .age-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .age-label {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .detail-info {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .detail-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            display: block;
+        }
+
+        .detail-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .zodiac-sign {
+            margin-top: 20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .zodiac-text {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        /* Adult Notification Styles */
+        .adult-notification {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 140, 0, 0.3));
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: none;
+            animation: adultPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .adult-notification::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes adultPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(20px);
+            }
+            70% {
+                transform: scale(1.05) translateY(-5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .adult-notification.show {
+            display: block;
+        }
+
+        .adult-icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+            display: inline-block;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .adult-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .adult-text {
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .adult-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700; }
+            to { box-shadow: 0 0 20px #ffd700, 0 0 30px #ff8c00; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.8rem;
+            }
+            .glass-card {
+                padding: 30px 20px;
+            }
+            .age-display {
+                font-size: 3rem;
+            }
+            .adult-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        .error-msg {
+            color: #ffeb3b;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="glass-card">
+            <h1 class="title">Nhập Ngày Sinh Của Bạn Để Kiểm Tra Tuổi Của Bạn</h1>
+            <p class="subtitle">Được Code Bởi : Nguyễn Chí Dự</p>
+            
+            <div class="input-group">
+                <label class="input-label">📅 Chọn ngày sinh của bạn</label>
+                <input type="date" class="date-input" id="birthDate" max="">
+            </div>
+            
+            <button class="check-btn" onclick="calculateAge()">🔮 Kiểm Tra Ngay</button>
+            
+            <div class="error-msg" id="errorMsg">Vui lòng chọn ngày sinh hợp lệ! 🚨</div>
+            
+            <div class="result-container" id="result">
+                <div class="age-display" id="ageYears">0</div>
+                <div class="age-label">tuổi</div>
+                
+                <div class="detail-info">
+                    <div class="detail-box">
+                        <span class="detail-number" id="ageMonths">0</span>
+                        <span class="detail-text">Tháng</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-number" id="ageDays">0</span>
+                        <span class="detail-text">Ngày</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-number" id="nextBirthday">0</span>
+                        <span class="detail-text">Ngày tới SN</span>
+                    </div>
+                </div>
+                
+                <div class="zodiac-sign" id="zodiacIcon">⭐</div>
+                <div class="zodiac-text" id="zodiacText">Cung hoàng đạo</div>
+
+                <!-- Adult Notification -->
+                <div class="adult-notification" id="adultNotification">
+                    <div class="adult-icon">🎉</div>
+                    <div class="adult-title">Chúc Mừng Bạn!</div>
+                    <div class="adult-text">Bạn đã trưởng thành (18+)</div>
+                    <div class="adult-badge">NGƯỜI LỚN ✓</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set max date to today
+        document.getElementById('birthDate').max = new Date().toISOString().split('T')[0];
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.width = particle.style.height = (Math.random() * 15 + 5) + 'px';
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Zodiac signs
+        function getZodiac(day, month) {
+            const zodiacs = [
+                { sign: 'Ma Kết', icon: '♑', dates: [1, 19] },
+                { sign: 'Bảo Bình', icon: '♒', dates: [2, 18] },
+                { sign: 'Song Ngư', icon: '♓', dates: [3, 20] },
+                { sign: 'Bạch Dương', icon: '♈', dates: [4, 19] },
+                { sign: 'Kim Ngưu', icon: '♉', dates: [5, 20] },
+                { sign: 'Song Tử', icon: '♊', dates: [6, 20] },
+                { sign: 'Cự Giải', icon: '♋', dates: [7, 22] },
+                { sign: 'Sư Tử', icon: '♌', dates: [8, 22] },
+                { sign: 'Xử Nữ', icon: '♍', dates: [9, 22] },
+                { sign: 'Thiên Bình', icon: '♎', dates: [10, 22] },
+                { sign: 'Bọ Cạp', icon: '♏', dates: [11, 21] },
+                { sign: 'Nhân Mã', icon: '♐', dates: [12, 21] },
+                { sign: 'Ma Kết', icon: '♑', dates: [12, 31] }
+            ];
+
+            for (let z of zodiacs) {
+                if (month === z.dates[0] && day <= z.dates[1]) {
+                    return z;
+                } else if (month === z.dates[0] - 1 && day > zodiacs[zodiacs.indexOf(z) - 1]?.dates[1]) {
+                    return zodiacs[zodiacs.indexOf(z) - 1];
+                }
+            }
+            return zodiacs[0];
+        }
+
+        function calculateAge() {
+            const birthDateInput = document.getElementById('birthDate');
+            const birthDate = new Date(birthDateInput.value);
+            const today = new Date();
+            const errorMsg = document.getElementById('errorMsg');
+            const result = document.getElementById('result');
+            const adultNotification = document.getElementById('adultNotification');
+
+            // Validation
+            if (!birthDateInput.value || birthDate > today) {
+                errorMsg.style.display = 'block';
+                result.classList.remove('show');
+                adultNotification.classList.remove('show');
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+
+            // Calculate age
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Calculate total days
+            const diffTime = Math.abs(today - birthDate);
+            const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Calculate next birthday
+            let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+            const daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+
+            // Get zodiac
+            const zodiac = getZodiac(birthDate.getDate(), birthDate.getMonth() + 1);
+
+            // Animate numbers
+            animateNumber('ageYears', years);
+            animateNumber('ageMonths', months);
+            animateNumber('ageDays', days);
+            animateNumber('nextBirthday', daysUntilBirthday);
+
+            // Update zodiac
+            document.getElementById('zodiacIcon').textContent = zodiac.icon;
+            document.getElementById('zodiacText').textContent = `Cung ${zodiac.sign}`;
+
+            // Show/Hide Adult Notification based on age
+            if (years >= 18) {
+                adultNotification.classList.add('show');
+            } else {
+                adultNotification.classList.remove('show');
+            }
+
+            // Show result
+            result.classList.add('show');
+        }
+
+        function animateNumber(id, target) {
+            const element = document.getElementById(id);
+            const duration = 1000;
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('birthDate').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateAge();
+            }
+        });
+    </script>
+</body>
+</html>
